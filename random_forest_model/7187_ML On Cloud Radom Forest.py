@@ -16,20 +16,32 @@ from sklearn.preprocessing import StandardScaler
 
 df = pd.read_csv("Company_House_Info.csv")
 
-# Data Pre-processing,  which include rename features, remove duplicates rows to avoid bias, fill missing numeric values, then separate features and targets and finally split data for training and testing in 70% and 30%
-def load_and_prepare_data(df):
-    if "Bankrupt?" in df.columns:
-        df.rename(columns={"Bankrupt?": "Target"}, inplace=True)
-    df.drop_duplicates(inplace=True)
-    df.fillna(df.median(numeric_only=True), inplace=True)
-    X = df.drop(columns=["Target"])
-    y = df["Target"]
-    scaler = StandardScaler()
-    X_scaled = scaler.fit_transform(X)
-    return train_test_split(X_scaled, y, test_size=0.3, random_state=42), scaler, X.columns.tolist()
+# Data Pre-processing,  which include rename features, remove duplicates rows to avoid bias,
+# fill missing numeric values, then separate features and targets and finally split data for training
+# and testing in 70% and 30%
+def load_and_prepare_data(data_frame):
+    if "Bankrupt?" in data_frame.columns:
+        data_frame.rename(columns={"Bankrupt?": "Target"}, inplace=True)
+    data_frame.drop_duplicates(inplace=True)
+    data_frame.fillna(data_frame.median(numeric_only=True), inplace=True)
+    no_target = data_frame.drop(columns=["Target"])
+    with_target = data_frame["Target"]
+    standard_scaler = StandardScaler()
+    no_target_scaled = standard_scaler.fit_transform(no_target)
+    return (train_test_split(no_target_scaled,
+                             with_target,
+                            test_size=0.3,
+                            random_state=42),
+            scaler,
+            no_target.columns.tolist())
+
+
 (X_train, X_test, y_train, y_test), scaler, feature_names = load_and_prepare_data(df)
 
-# Random Forest Model, Firstly addressing class imbalance using SMOTEto balance it, secondly train random forest model, thirdly predicted class labels and probabilities for the positive class and Lastly, evaluation through confusion matrix and accuracy and different curve graphs
+# Random Forest Model, Firstly addressing class imbalance using SMOTEto balance it,
+# secondly train random forest model, thirdly predicted class labels and probabilities for
+# the positive class and Lastly, evaluation through confusion matrix and accuracy
+# and different curve graphs
 smote = SMOTE(random_state=42)
 X_train_bal, y_train_bal = smote.fit_resample(X_train, y_train)
 rf_model = RandomForestClassifier(n_estimators=100, class_weight='balanced', random_state=42)
@@ -63,7 +75,8 @@ plt.grid(True)
 plt.tight_layout()
 plt.show()
 
-# Visualisation of Precision-Recall Curve for focusing on model performance for positive class in imbalance data.
+# Visualisation of Precision-Recall Curve for focusing on model performance for positive class
+# in imbalance data.
 plt.figure(figsize=(6, 4))
 plt.plot(recall, precision, label="Precision-Recall Curve")
 plt.xlabel("Recall")
