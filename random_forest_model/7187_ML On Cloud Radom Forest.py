@@ -16,8 +16,8 @@ from sklearn.preprocessing import StandardScaler
 
 df = pd.read_csv("Company_House_Info.csv")
 
-# Data Pre-processing,  which include rename features, remove duplicates rows to avoid bias,
-# fill missing numeric values, then separate features and targets and finally split data for training
+# load_and_prepare_data includes rename features to remove duplicate rows to avoid bias,
+# fill missing numeric values, then separate features and targets to finally split data for training
 # and testing in 70% and 30%
 def load_and_prepare_data(data_frame):
     if "Bankrupt?" in data_frame.columns:
@@ -38,9 +38,9 @@ def load_and_prepare_data(data_frame):
 
 (X_train, X_test, y_train, y_test), scaler, feature_names = load_and_prepare_data(df)
 
-# Random Forest Model, Firstly addressing class imbalance using SMOTEto balance it,
-# secondly train random forest model, thirdly predicted class labels and probabilities for
-# the positive class and Lastly, evaluation through confusion matrix and accuracy
+# Random Forest Model firstly addresses class imbalance using SMOTE to balance it,
+# secondly trains random forest model, thirdly predicts class labels and probabilities for
+# the positive class and lastly, evaluates through confusion matrix and accuracy
 # and different curve graphs
 smote = SMOTE(random_state=42)
 X_train_bal, y_train_bal = smote.fit_resample(X_train, y_train)

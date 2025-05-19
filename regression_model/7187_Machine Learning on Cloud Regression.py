@@ -15,9 +15,9 @@ from sklearn.metrics import (
 
 df = pd.read_csv("Company_House_Info.csv")
 
-# Data Pre-processing, which include rename features, remove duplicates rows to avoid bias,
+# load_and_prepare_data includes features to rename, remove duplicate rows to avoid bias,
 # fill missing numeric values, then separate features and targets and finally split data for
-# training and testing in 70% and 30%
+# training and testing in 70% and 30%.
 def load_and_prepare_data(data_frame):
     if "Bankrupt?" in data_frame.columns:
         data_frame.rename(columns={"Bankrupt?": "Target"}, inplace=True)
